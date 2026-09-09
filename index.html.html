@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OJCDO — Panel de Casos</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-0:#f9f9f7;
+    --surface-1:#fcfcfb;
+    --surface-2:#ffffff;
+    --text-primary:#0b0b0b;
+    --text-secondary:#52514e;
+    --text-muted:#898781;
+    --grid:#e1e0d9;
+    --axis:#c3c2b7;
+    --border:rgba(11,11,11,0.10);
+    --s1:#2a78d6; /* blue */
+    --s2:#eb6834; /* orange */
+    --s3:#1baf7a; /* aqua */
+    --s4:#eda100; /* yellow */
+    --s5:#e87ba4; /* magenta */
+    --good:#0ca30c;
+    --warning:#fab219;
+    --critical:#d03b3b;
+    --good-bg:#e7f6e7;
+    --warning-bg:#fff5e0;
+    --critical-bg:#fbe9e9;
+    --muted-bg:#f0efec;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      color-scheme: dark;
+      --surface-0:#0d0d0d;
+      --surface-1:#1a1a19;
+      --surface-2:#222221;
+      --text-primary:#ffffff;
+      --text-secondary:#c3c2b7;
+      --text-muted:#898781;
+      --grid:#2c2c2a;
+      --axis:#383835;
+      --border:rgba(255,255,255,0.10);
+      --s1:#3987e5;
+      --s2:#d95926;
+      --s3:#199e70;
+      --s4:#c98500;
+      --s5:#d55181;
+      --good:#0ca30c;
+      --warning:#fab219;
+      --critical:#e66767;
+      --good-bg:#12281a;
+      --warning-bg:#2e2410;
+      --critical-bg:#301717;
+      --muted-bg:#232320;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--surface-0);
+    color:var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px;}
+
+  header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;}
+  .title-block h1{font-size:22px;font-weight:700;margin:0;}
+  .badge-cut{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:8px;
+    padding:8px 14px;font-size:12.5px;color:var(--text-secondary);white-space:nowrap;
+  }
+  .badge-cut b{color:var(--text-primary);}
+  .demo-tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    background:var(--warning-bg);color:#8a5a00;border:1px solid var(--warning);border-radius:5px;padding:2px 7px;margin-left:8px;vertical-align:2px;
+  }
+  @media (prefers-color-scheme: dark){ .demo-tag{color:#fab219;} }
+
+  /* year switch */
+  .year-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
+  .year-switch{display:inline-flex;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:3px;gap:2px;}
+  .year-btn{
+    border:none;background:transparent;color:var(--text-secondary);font-size:13px;font-weight:600;
+    padding:7px 16px;border-radius:7px;cursor:pointer;font-family:inherit;
+  }
+  .year-btn.active{background:var(--s1);color:#fff;}
+  .year-btn:not(.active):hover{background:var(--grid);}
+
+  /* phase cards */
+  .phases{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+  .phase-card{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .phase-card .name{font-size:14px;font-weight:700;}
+  .phase-status{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;white-space:nowrap;}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;}
+  .dot.good{background:var(--good);}
+  .dot.warn{background:var(--warning);}
+  .phase-status.good{color:var(--good);}
+  .phase-status.warn{color:#8a5a00;}
+  @media (prefers-color-scheme: dark){ .phase-status.warn{color:#fab219;} }
+  .phase-card .note{font-size:11.5px;color:var(--text-muted);width:100%;}
+
+  /* KPI row */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+  .kpi{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+    padding:16px 14px;
+  }
+  .kpi .val{font-size:26px;font-weight:700;line-height:1.1;}
+  .kpi .lbl{margin-top:5px;font-size:12px;color:var(--text-secondary);}
+
+  /* section header (Acusados y Sentenciados) */
+  .section-head{display:flex;align-items:baseline;gap:8px;margin:8px 0 12px;}
+  .section-head .roman{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--s2);}
+  .section-head h2{font-size:16px;font-weight:700;margin:0;}
+  .section-box{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+    padding:18px 20px 20px;margin-bottom:24px;
+  }
+  .kpis-row{display:grid;gap:12px;}
+  .kpis-row + .kpis-row{margin-top:12px;}
+  .kpis-row.cols3{grid-template-columns:repeat(3,1fr);}
+  .kpi-plain{padding:10px 4px;}
+  .kpi-plain .val{font-size:24px;font-weight:700;line-height:1.1;}
+  .kpi-plain .val.tone-blue{color:var(--s1);}
+  .kpi-plain .val.tone-brown{color:#8a5a00;}
+  .kpi-plain .val.tone-red{color:var(--critical);}
+  .kpi-plain .val.tone-green{color:var(--good);}
+  .kpi-plain .val.tone-violet{color:#6a5acd;}
+  .kpi-plain .lbl{margin-top:4px;font-size:11.5px;color:var(--text-secondary);}
+  .section-divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
+  .section-footnote{margin-top:10px;font-size:11px;color:var(--text-muted);}
+
+  section.panel{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
+    padding:20px 22px 16px;margin-bottom:18px;
+  }
+  .panel h2{font-size:14.5px;font-weight:700;margin:0 0 2px;}
+  .panel .sub{font-size:12px;color:var(--text-muted);margin:0 0 14px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media (max-width:860px){
+    .grid2{grid-template-columns:1fr;}
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .phases{grid-template-columns:1fr;}
+    .kpis-row.cols3{grid-template-columns:1fr;}
+    .pena-cols{grid-template-columns:1fr !important;}
+  }
+
+  /* bar chart */
+  .barlist{display:flex;flex-direction:column;gap:10px;}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 46px;align-items:center;gap:10px;}
+  .bar-row .lbl{font-size:12.5px;color:var(--text-secondary);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bar-track{position:relative;height:16px;background:var(--grid);border-radius:8px;overflow:hidden;}
+  .bar-fill{position:absolute;left:0;top:0;height:100%;border-radius:8px;transition:width .25s ease,filter .12s;}
+  .bar-fill:hover{filter:brightness(1.08);}
+  .bar-row .num{font-size:12.5px;font-weight:700;color:var(--text-primary);}
+
+  /* delitos: etiquetas completas, sin truncar */
+  #delitoChart .bar-row{grid-template-columns:290px 1fr 42px;}
+  #delitoChart .bar-row .lbl{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35;}
+
+  /* penas: tres columnas Principales / Sustitutivas / Accesorias */
+  .pena-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px 24px;margin-top:6px;}
+  .pena-col h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text-muted);margin:0 0 10px;}
+  .pena-col .barlist{gap:14px;}
+  .pena-col .bar-row{
+    display:grid;grid-template-columns:1fr 30px;grid-template-rows:auto auto;
+    row-gap:4px;column-gap:8px;align-items:center;
+  }
+  .pena-col .bar-row .lbl{
+    grid-row:1;grid-column:1 / span 2;text-align:left;white-space:normal;
+    overflow:visible;text-overflow:clip;
+    font-size:12px;color:var(--text-secondary);margin-bottom:0;
+  }
+  .pena-col .bar-row .bar-track{grid-column:1;grid-row:2;}
+  .pena-col .bar-row .num{grid-column:2;grid-row:2;text-align:right;}
+  .pena-col-empty{font-size:12px;color:var(--text-muted);}
+
+  .highlight-note{
+    margin-top:16px;padding:10px 14px;border-radius:8px;
+    background:var(--good-bg);font-size:12.5px;color:var(--text-primary);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  }
+  .highlight-note b{font-size:14px;}
+
+  .muted-note{
+    margin-top:14px;padding:10px 14px;border-radius:8px;
+    background:var(--muted-bg);font-size:12px;color:var(--text-secondary);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  }
+  .muted-note b{color:var(--text-primary);}
+
+  .tooltip{
+    position:fixed;pointer-events:none;background:var(--text-primary);color:var(--surface-1);
+    font-size:11.5px;padding:6px 9px;border-radius:6px;transform:translate(-50%,-125%);
+    opacity:0;transition:opacity .1s;white-space:nowrap;z-index:50;
+  }
+  .tooltip.show{opacity:1;}
+
+  svg text{font-family:inherit;}
+  .axis-label{fill:var(--text-muted);font-size:10.5px;}
+  .gridline{stroke:var(--grid);stroke-width:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="title-block">
+      <h1>Oficina Judicial Especializada contra la Delincuencia Organizada (OJCDO)<span class="demo-tag">Demo</span></h1>
+    </div>
+    <div class="badge-cut">Corte de datos: <b>08 de septiembre de 2026</b> · Fuente: Registro Maestro (plantilla_audiencias)</div>
+  </header>
+
+  <div class="year-row">
+    <div class="year-switch" id="yearSwitch">
+      <button class="year-btn" data-year="2025">2025</button>
+      <button class="year-btn" data-year="2026">2026</button>
+      <button class="year-btn active" data-year="total">Total</button>
+    </div>
+  </div>
+
+  <div class="phases">
+    <div class="phase-card">
+      <div class="name">Fase de Juicio Oral</div>
+      <div class="phase-status good"><span class="dot good"></span>Operativo</div>
+    </div>
+    <div class="phase-card">
+      <div class="name">Garantía · Cumplimiento · TSA</div>
+      <div class="phase-status warn"><span class="dot warn"></span>Pendiente</div>
+      <div class="note">Aún no disponibles en el sistema</div>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpiRow"></div>
+
+  <div class="grid2">
+    <section class="panel">
+      <h2>Resultado de las audiencias</h2>
+      <p class="sub" id="resultadoSub"></p>
+      <div id="resultadoChart" class="barlist"></div>
+    </section>
+    <section class="panel">
+      <h2>Estado de la sentencia</h2>
+      <p class="sub" id="estadoSub"></p>
+      <div id="estadoChart" class="barlist"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>Causas por sala</h2>
+    <p class="sub" id="salaSub"></p>
+    <div id="salaChart" class="barlist"></div>
+  </section>
+
+  <!-- Acusados y Sentenciados -->
+  <div class="section-head">
+    <span class="roman">VIII.</span>
+    <h2>Acusados y Sentenciados</h2>
+  </div>
+  <div class="section-box">
+    <div class="kpis-row cols3">
+      <div class="kpi-plain"><div class="val tone-blue" id="valAcusados"></div><div class="lbl">Total de acusados (incluye en curso y sentenciados)</div></div>
+      <div class="kpi-plain"><div class="val" id="valNatural"></div><div class="lbl">Persona Natural</div></div>
+      <div class="kpi-plain"><div class="val tone-violet" id="valJuridica"></div><div class="lbl">Persona Jurídica</div></div>
+    </div>
+    <hr class="section-divider">
+    <div class="kpis-row cols3">
+      <div class="kpi-plain"><div class="val tone-brown" id="valSentenciados"></div><div class="lbl">Total de sentenciados</div></div>
+      <div class="kpi-plain"><div class="val tone-red" id="valCulpables"></div><div class="lbl">Culpables</div></div>
+      <div class="kpi-plain"><div class="val tone-green" id="valAbsueltos"></div><div class="lbl">Absueltos (inocentes)</div></div>
+    </div>
+    <p class="section-footnote">Personas — no causas: se cuentan por acusado individual dentro de cada expediente, a partir del Detalle de Penas (sentenciados) y del Registro Maestro (total de acusados).</p>
+  </div>
+
+  <section class="panel">
+    <h2>Tipo de pena aplicada</h2>
+    <p class="sub" id="penaSub"></p>
+    <div class="pena-cols">
+      <div class="pena-col">
+        <h3>Principales</h3>
+        <div id="penaPrincipal" class="barlist"></div>
+      </div>
+      <div class="pena-col">
+        <h3>Sustitutivas</h3>
+        <div id="penaSustitutiva" class="barlist"></div>
+      </div>
+      <div class="pena-col">
+        <h3>Accesorias</h3>
+        <div id="penaAccesoria" class="barlist"></div>
+      </div>
+    </div>
+    <div class="highlight-note" id="comisoNote"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Delitos con mayor frecuencia</h2>
+    <p class="sub" id="delitoSub"></p>
+    <div id="delitoChart" class="barlist"></div>
+  </section>
+
+</div>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const tooltip = document.getElementById('tooltip');
+function showTip(evt, html){
+  tooltip.innerHTML = html;
+  tooltip.style.left = evt.clientX + 'px';
+  tooltip.style.top = evt.clientY + 'px';
+  tooltip.classList.add('show');
+}
+function hideTip(){ tooltip.classList.remove('show'); }
+
+function renderBars(containerId, data, opts){
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  if(!data.length){ el.innerHTML = '<div class="pena-col-empty">Sin registros</div>'; return; }
+  const max = Math.max(...data.map(d=>d.value), 1);
+  data.forEach(d=>{
+    const pct = d.value / max * 100;
+    const share = opts && opts.total ? (d.value/opts.total*100).toFixed(0)+'%' : '';
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `
+      <div class="lbl">${d.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${d.color}"></div></div>
+      <div class="num">${d.value}</div>
+    `;
+    const fill = row.querySelector('.bar-fill');
+    fill.addEventListener('mousemove', e=> showTip(e, `<b>${d.label}</b>: ${d.value}${share ? ' ('+share+')' : ''}`));
+    fill.addEventListener('mouseleave', hideTip);
+    el.appendChild(row);
+  });
+}
+
+// ---- Dataset by year (fuente: Registro Maestro + Detalle de Penas, plantilla_audiencias) ----
+const DATA = {
+  2025: {
+    causas:29, sentencias:20, reprogramadas:8, activas:1,
+    acusados:48, natural:46, juridica:2,
+    sentenciadosPersonas:29, culpablesPersonas:22, absueltosPersonas:7,
+    comisoMonto:0,
+    resultado:[
+      {label:'Sentencia por Acuerdo', value:11, color:'var(--s1)'},
+      {label:'Reprogramada', value:8, color:'var(--s2)'},
+      {label:'Sentencia', value:9, color:'var(--s3)'},
+      {label:'Continúa Activo', value:1, color:'var(--s4)'},
+    ],
+    resultadoTotal:29,
+    estado:[
+      {label:'Ejecutada', value:16, color:'var(--s1)'},
+      {label:'En Recurso TSA', value:2, color:'var(--s2)'},
+      {label:'Anulada', value:2, color:'var(--s3)'},
+    ],
+    estadoTotal:20,
+    sala:[
+      {label:'Sala 2', value:25, color:'var(--s1)'},
+      {label:'Sala 1', value:4, color:'var(--s2)'},
+      {label:'Sala 3', value:0, color:'var(--s3)'},
+    ],
+    salaTotal:29,
+    penaPrincipal:[
+      {label:'Prisión', value:21, color:'var(--s1)'},
+      {label:'Inhabilitación func. públicas', value:1, color:'var(--s1)'},
+    ],
+    penaSustitutiva:[
+      {label:'Trabajo Comunitario', value:9, color:'var(--s4)'},
+      {label:'Días-Multa', value:3, color:'var(--s4)'},
+    ],
+    penaAccesoria:[
+      {label:'Inhabilitación func. públicas', value:18, color:'var(--s5)'},
+      {label:'Multa', value:4, color:'var(--s5)'},
+      {label:'Comiso', value:0, color:'var(--s5)'},
+    ],
+    penaTotal:51,
+    delito:[
+      {label:'Otros delitos relacionados con Drogas (posesión, conspiración, combinados)', value:7, color:'var(--s1)'},
+      {label:'Tráfico Internacional de Drogas', value:8, color:'var(--s1)'},
+      {label:'Homicidio Doloso Agravado', value:1, color:'var(--s1)'},
+      {label:'Blanqueo de Capitales', value:1, color:'var(--s1)'},
+      {label:'Corrupción', value:2, color:'var(--s1)'},
+      {label:'Extorsión', value:1, color:'var(--s1)'},
+      {label:'Otros (causas reprogramadas o activas, sin resultado final)', value:9, color:'var(--axis)'},
+    ],
+    delitoTotal:29,
+  },
+  2026: {
+    causas:42, sentencias:25, reprogramadas:16, activas:1,
+    acusados:139, natural:139, juridica:0,
+    sentenciadosPersonas:75, culpablesPersonas:65, absueltosPersonas:10,
+    comisoMonto:19719.50,
+    resultado:[
+      {label:'Sentencia por Acuerdo', value:15, color:'var(--s1)'},
+      {label:'Reprogramada', value:16, color:'var(--s2)'},
+      {label:'Sentencia', value:10, color:'var(--s3)'},
+      {label:'Continúa Activo', value:1, color:'var(--s4)'},
+    ],
+    resultadoTotal:42,
+    estado:[
+      {label:'Ejecutada', value:16, color:'var(--s1)'},
+      {label:'En Recurso TSA', value:8, color:'var(--s2)'},
+      {label:'Anulada', value:0, color:'var(--s3)'},
+    ],
+    estadoTotal:25,
+    sala:[
+      {label:'Sala 2', value:31, color:'var(--s1)'},
+      {label:'Sala 3', value:10, color:'var(--s2)'},
+      {label:'Sala 1', value:1, color:'var(--s3)'},
+    ],
+    salaTotal:42,
+    penaPrincipal:[
+      {label:'Prisión', value:64, color:'var(--s1)'},
+      {label:'Multa', value:9, color:'var(--s1)'},
+    ],
+    penaSustitutiva:[
+      {label:'Trabajo Comunitario', value:8, color:'var(--s4)'},
+      {label:'Días-Multa', value:4, color:'var(--s4)'},
+    ],
+    penaAccesoria:[
+      {label:'Inhabilitación func. públicas', value:39, color:'var(--s5)'},
+      {label:'Multa', value:23, color:'var(--s5)'},
+      {label:'Comiso', value:2, color:'var(--s5)'},
+    ],
+    penaTotal:147,
+    delito:[
+      {label:'Blanqueo de Capitales', value:4, color:'var(--s1)'},
+      {label:'Posesión Agravada de Drogas', value:1, color:'var(--s1)'},
+      {label:'Otros delitos relacionados con Drogas (posesión, conspiración, combinados)', value:3, color:'var(--s1)'},
+      {label:'Homicidio Doloso Agravado', value:7, color:'var(--s1)'},
+      {label:'Asociación Ilícita', value:2, color:'var(--s1)'},
+      {label:'Contra la Fe Pública', value:2, color:'var(--s1)'},
+      {label:'Hurto / Robo Agravado', value:2, color:'var(--s1)'},
+      {label:'Pandillerismo', value:2, color:'var(--s1)'},
+      {label:'Extorsión', value:1, color:'var(--s1)'},
+      {label:'Trata de Personas', value:1, color:'var(--s1)'},
+      {label:'Secuestro', value:1, color:'var(--s1)'},
+      {label:'Otros (causas reprogramadas o activas, sin resultado final)', value:17, color:'var(--axis)'},
+    ],
+    delitoTotal:42,
+  },
+  total: {
+    causas:71, sentencias:45, reprogramadas:24, activas:2,
+    acusados:187, natural:185, juridica:2,
+    sentenciadosPersonas:104, culpablesPersonas:87, absueltosPersonas:17,
+    comisoMonto:19719.50,
+    resultado:[
+      {label:'Sentencia por Acuerdo', value:26, color:'var(--s1)'},
+      {label:'Reprogramada', value:24, color:'var(--s2)'},
+      {label:'Sentencia', value:19, color:'var(--s3)'},
+      {label:'Continúa Activo', value:2, color:'var(--s4)'},
+    ],
+    resultadoTotal:71,
+    estado:[
+      {label:'Ejecutada', value:32, color:'var(--s1)'},
+      {label:'En Recurso TSA', value:10, color:'var(--s2)'},
+      {label:'Anulada', value:2, color:'var(--s3)'},
+    ],
+    estadoTotal:45,
+    sala:[
+      {label:'Sala 2', value:56, color:'var(--s1)'},
+      {label:'Sala 3', value:10, color:'var(--s2)'},
+      {label:'Sala 1', value:5, color:'var(--s3)'},
+    ],
+    salaTotal:71,
+    penaPrincipal:[
+      {label:'Prisión', value:85, color:'var(--s1)'},
+      {label:'Multa', value:9, color:'var(--s1)'},
+      {label:'Inhabilitación func. públicas', value:1, color:'var(--s1)'},
+    ],
+    penaSustitutiva:[
+      {label:'Trabajo Comunitario', value:17, color:'var(--s4)'},
+      {label:'Días-Multa', value:7, color:'var(--s4)'},
+    ],
+    penaAccesoria:[
+      {label:'Inhabilitación func. públicas', value:57, color:'var(--s5)'},
+      {label:'Multa', value:27, color:'var(--s5)'},
+      {label:'Comiso', value:2, color:'var(--s5)'},
+    ],
+    penaTotal:198,
+    delito:[
+      {label:'Otros delitos relacionados con Drogas (posesión, conspiración, combinados)', value:10, color:'var(--s1)'},
+      {label:'Tráfico Internacional de Drogas', value:8, color:'var(--s1)'},
+      {label:'Homicidio Doloso Agravado', value:8, color:'var(--s1)'},
+      {label:'Blanqueo de Capitales', value:5, color:'var(--s1)'},
+      {label:'Asociación Ilícita', value:2, color:'var(--s1)'},
+      {label:'Corrupción', value:2, color:'var(--s1)'},
+      {label:'Contra la Fe Pública', value:2, color:'var(--s1)'},
+      {label:'Hurto / Robo Agravado', value:2, color:'var(--s1)'},
+      {label:'Pandillerismo', value:2, color:'var(--s1)'},
+      {label:'Extorsión', value:2, color:'var(--s1)'},
+      {label:'Trata de Personas', value:1, color:'var(--s1)'},
+      {label:'Secuestro', value:1, color:'var(--s1)'},
+      {label:'Otros (causas reprogramadas o activas, sin resultado final)', value:26, color:'var(--axis)'},
+    ],
+    delitoTotal:71,
+  },
+};
+
+function render(year){
+  const d = DATA[year];
+  const yearLbl = year === 'total' ? 'ambos años' : year;
+
+  document.getElementById('kpiRow').innerHTML = [
+    {val:d.causas, lbl:'Causas registradas'},
+    {val:d.reprogramadas, lbl:'Reprogramadas'},
+    {val:d.activas, lbl:'Activas / en curso'},
+    {val:d.sentencias, lbl:'Sentencias emitidas'},
+  ].map(k=>`<div class="kpi"><div class="val">${k.val}</div><div class="lbl">${k.lbl}</div></div>`).join('');
+
+  document.getElementById('resultadoSub').textContent = `Distribución de las ${d.resultadoTotal} causas del Registro Maestro (${yearLbl})`;
+  renderBars('resultadoChart', d.resultado, {total:d.resultadoTotal});
+
+  document.getElementById('estadoSub').textContent = `De las ${d.estadoTotal} causas con sentencia emitida (${yearLbl})`;
+  renderBars('estadoChart', d.estado, {total:d.estadoTotal});
+
+  document.getElementById('salaSub').textContent = `Distribución de las ${d.salaTotal} causas (${yearLbl})`;
+  renderBars('salaChart', d.sala, {total:d.salaTotal});
+
+  // Acusados y Sentenciados
+  document.getElementById('valAcusados').textContent = d.acusados;
+  document.getElementById('valNatural').textContent = d.natural;
+  document.getElementById('valJuridica').textContent = d.juridica;
+  document.getElementById('valSentenciados').textContent = d.sentenciadosPersonas;
+  document.getElementById('valCulpables').textContent = d.culpablesPersonas;
+  document.getElementById('valAbsueltos').textContent = d.absueltosPersonas;
+
+  document.getElementById('penaSub').textContent = `${d.penaTotal} penas registradas en el Detalle de Penas, por persona sentenciada (${yearLbl})`;
+  renderBars('penaPrincipal', d.penaPrincipal);
+  renderBars('penaSustitutiva', d.penaSustitutiva);
+  renderBars('penaAccesoria', d.penaAccesoria);
+
+  const comisoFmt = d.comisoMonto.toLocaleString('es-PA', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('comisoNote').innerHTML = `<span>Total recolectado en comisos (${yearLbl})</span><b>B/. ${comisoFmt}</b>`;
+
+  document.getElementById('delitoSub').textContent = `Delito principal de cada causa, agrupado por tipo (${yearLbl}) · fuente: Registro Maestro`;
+  renderBars('delitoChart', d.delito, {total:d.delitoTotal});
+}
+
+document.getElementById('yearSwitch').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.year-btn');
+  if(!btn) return;
+  document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render(btn.dataset.year);
+});
+
+render('total');
+</script>
+</body>
+</html>
