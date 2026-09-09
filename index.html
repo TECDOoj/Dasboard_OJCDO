@@ -213,7 +213,7 @@
     <div class="title-block">
       <h1>Oficina Judicial Especializada contra la Delincuencia Organizada (OJCDO)<span class="demo-tag">Demo</span></h1>
     </div>
-    <div class="badge-cut">Corte de datos: <b>08 de septiembre de 2026</b> · Fuente: Registro Maestro (plantilla_audiencias)</div>
+    <div class="badge-cut">Corte de datos: <b>09 de septiembre de 2026</b> · Fuente: Registro Maestro (plantilla_audiencias)</div>
   </header>
 
   <div class="year-row">
@@ -259,7 +259,6 @@
 
   <!-- Acusados y Sentenciados -->
   <div class="section-head">
-    <span class="roman">VIII.</span>
     <h2>Acusados y Sentenciados</h2>
   </div>
   <div class="section-box">
@@ -272,7 +271,7 @@
     <div class="kpis-row cols3">
       <div class="kpi-plain"><div class="val tone-brown" id="valSentenciados"></div><div class="lbl">Total de sentenciados</div></div>
       <div class="kpi-plain"><div class="val tone-red" id="valCulpables"></div><div class="lbl">Culpables</div></div>
-      <div class="kpi-plain"><div class="val tone-green" id="valAbsueltos"></div><div class="lbl">Absueltos (inocentes)</div></div>
+      <div class="kpi-plain"><div class="val tone-green" id="valAbsueltos"></div><div class="lbl">Absueltos</div></div>
     </div>
     <p class="section-footnote">Personas — no causas: se cuentan por acusado individual dentro de cada expediente, a partir del Detalle de Penas (sentenciados) y del Registro Maestro (total de acusados).</p>
   </div>
@@ -365,19 +364,18 @@ const DATA = {
     ],
     salaTotal:29,
     penaPrincipal:[
-      {label:'Prisión', value:21, color:'var(--s1)'},
-      {label:'Inhabilitación func. públicas', value:1, color:'var(--s1)'},
+      {label:'Prisión', value:23, color:'var(--s1)'},
     ],
     penaSustitutiva:[
       {label:'Trabajo Comunitario', value:9, color:'var(--s4)'},
       {label:'Días-Multa', value:3, color:'var(--s4)'},
     ],
     penaAccesoria:[
-      {label:'Inhabilitación func. públicas', value:18, color:'var(--s5)'},
+      {label:'Inhabilitación func. públicas', value:19, color:'var(--s5)'},
       {label:'Multa', value:4, color:'var(--s5)'},
       {label:'Comiso', value:0, color:'var(--s5)'},
     ],
-    penaTotal:51,
+    penaTotal:53,
     delito:[
       {label:'Otros delitos relacionados con Drogas (posesión, conspiración, combinados)', value:7, color:'var(--s1)'},
       {label:'Tráfico Internacional de Drogas', value:8, color:'var(--s1)'},
@@ -390,17 +388,17 @@ const DATA = {
     delitoTotal:29,
   },
   2026: {
-    causas:42, sentencias:25, reprogramadas:16, activas:1,
-    acusados:139, natural:139, juridica:0,
-    sentenciadosPersonas:75, culpablesPersonas:65, absueltosPersonas:10,
+    causas:43, sentencias:25, reprogramadas:17, activas:1,
+    acusados:171, natural:171, juridica:0,
+    sentenciadosPersonas:74, culpablesPersonas:65, absueltosPersonas:9,
     comisoMonto:19719.50,
     resultado:[
       {label:'Sentencia por Acuerdo', value:15, color:'var(--s1)'},
-      {label:'Reprogramada', value:16, color:'var(--s2)'},
+      {label:'Reprogramada', value:17, color:'var(--s2)'},
       {label:'Sentencia', value:10, color:'var(--s3)'},
       {label:'Continúa Activo', value:1, color:'var(--s4)'},
     ],
-    resultadoTotal:42,
+    resultadoTotal:43,
     estado:[
       {label:'Ejecutada', value:16, color:'var(--s1)'},
       {label:'En Recurso TSA', value:8, color:'var(--s2)'},
@@ -409,10 +407,10 @@ const DATA = {
     estadoTotal:25,
     sala:[
       {label:'Sala 2', value:31, color:'var(--s1)'},
-      {label:'Sala 3', value:10, color:'var(--s2)'},
+      {label:'Sala 3', value:11, color:'var(--s2)'},
       {label:'Sala 1', value:1, color:'var(--s3)'},
     ],
-    salaTotal:42,
+    salaTotal:43,
     penaPrincipal:[
       {label:'Prisión', value:64, color:'var(--s1)'},
       {label:'Multa', value:9, color:'var(--s1)'},
@@ -439,22 +437,22 @@ const DATA = {
       {label:'Extorsión', value:1, color:'var(--s1)'},
       {label:'Trata de Personas', value:1, color:'var(--s1)'},
       {label:'Secuestro', value:1, color:'var(--s1)'},
-      {label:'Otros (causas reprogramadas o activas, sin resultado final)', value:17, color:'var(--axis)'},
+      {label:'Otros (causas reprogramadas o activas, sin resultado final)', value:18, color:'var(--axis)'},
     ],
-    delitoTotal:42,
+    delitoTotal:43,
   },
   total: {
-    causas:71, sentencias:45, reprogramadas:24, activas:2,
-    acusados:187, natural:185, juridica:2,
-    sentenciadosPersonas:104, culpablesPersonas:87, absueltosPersonas:17,
+    causas:72, sentencias:45, reprogramadas:25, activas:2,
+    acusados:219, natural:217, juridica:2,
+    sentenciadosPersonas:103, culpablesPersonas:87, absueltosPersonas:16,
     comisoMonto:19719.50,
     resultado:[
       {label:'Sentencia por Acuerdo', value:26, color:'var(--s1)'},
-      {label:'Reprogramada', value:24, color:'var(--s2)'},
+      {label:'Reprogramada', value:25, color:'var(--s2)'},
       {label:'Sentencia', value:19, color:'var(--s3)'},
       {label:'Continúa Activo', value:2, color:'var(--s4)'},
     ],
-    resultadoTotal:71,
+    resultadoTotal:72,
     estado:[
       {label:'Ejecutada', value:32, color:'var(--s1)'},
       {label:'En Recurso TSA', value:10, color:'var(--s2)'},
@@ -463,25 +461,24 @@ const DATA = {
     estadoTotal:45,
     sala:[
       {label:'Sala 2', value:56, color:'var(--s1)'},
-      {label:'Sala 3', value:10, color:'var(--s2)'},
+      {label:'Sala 3', value:11, color:'var(--s2)'},
       {label:'Sala 1', value:5, color:'var(--s3)'},
     ],
-    salaTotal:71,
+    salaTotal:72,
     penaPrincipal:[
-      {label:'Prisión', value:85, color:'var(--s1)'},
+      {label:'Prisión', value:87, color:'var(--s1)'},
       {label:'Multa', value:9, color:'var(--s1)'},
-      {label:'Inhabilitación func. públicas', value:1, color:'var(--s1)'},
     ],
     penaSustitutiva:[
       {label:'Trabajo Comunitario', value:17, color:'var(--s4)'},
       {label:'Días-Multa', value:7, color:'var(--s4)'},
     ],
     penaAccesoria:[
-      {label:'Inhabilitación func. públicas', value:57, color:'var(--s5)'},
+      {label:'Inhabilitación func. públicas', value:58, color:'var(--s5)'},
       {label:'Multa', value:27, color:'var(--s5)'},
       {label:'Comiso', value:2, color:'var(--s5)'},
     ],
-    penaTotal:198,
+    penaTotal:200,
     delito:[
       {label:'Otros delitos relacionados con Drogas (posesión, conspiración, combinados)', value:10, color:'var(--s1)'},
       {label:'Tráfico Internacional de Drogas', value:8, color:'var(--s1)'},
@@ -495,9 +492,9 @@ const DATA = {
       {label:'Extorsión', value:2, color:'var(--s1)'},
       {label:'Trata de Personas', value:1, color:'var(--s1)'},
       {label:'Secuestro', value:1, color:'var(--s1)'},
-      {label:'Otros (causas reprogramadas o activas, sin resultado final)', value:26, color:'var(--axis)'},
+      {label:'Otros (causas reprogramadas o activas, sin resultado final)', value:27, color:'var(--axis)'},
     ],
-    delitoTotal:71,
+    delitoTotal:72,
   },
 };
 
